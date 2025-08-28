@@ -1,0 +1,1731 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Medix 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --option-bg: #ffffff;
+            --option-hover: #f1f3ff;
+            --option-selected: #4361ee;
+            --option-correct: #4ade80;
+            --option-incorrect: #f87171;
+            --answered: #4cc9f0;
+            --current: #f72585;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 7px;
+            font-size: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .header p {
+            font-size: 8px;
+            opacity: 0.9;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary), var(--secondary));
+        }
+
+        .content {
+            padding: 10px;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 4px;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 4px;
+            border-radius: 4px;
+            background: var(--light);
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-size: 8px;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn.blog {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .social-btn.whatsapp {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+        }
+
+        .social-btn.contact {
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            color: white;
+        }
+
+        .login-form, .student-form, .quiz-container, .result-container {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 9px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 4px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 9px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 1px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        .btn-info {
+            background: var(--info);
+        }
+
+        .timer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            background: var(--light);
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 9px;
+        }
+
+        .progress-container {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+
+        .question-btn {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background: var(--light);
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 9px;
+        }
+
+        .question-btn:hover {
+            background: var(--option-hover);
+            border-color: var(--primary);
+        }
+
+        .question-btn.current {
+            background: var(--current);
+            color: white;
+            border-color: var(--current);
+        }
+
+        .question-btn.answered {
+            background: var(--answered);
+            color: white;
+            border-color: var(--answered);
+        }
+
+        .question {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .option {
+            padding: 5px;
+            background: var(--option-bg);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background: var(--option-hover);
+            border-color: var(--primary);
+        }
+
+        .option.selected {
+            background: var(--option-selected);
+            color: white;
+            border-color: var(--option-selected);
+        }
+
+        .option.correct {
+            background: var(--option-correct);
+            color: white;
+            border-color: var(--option-correct);
+        }
+
+        .option.incorrect {
+            background: var(--option-incorrect);
+            color: white;
+            border-color: var(--option-incorrect);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .navigation-buttons button {
+            flex: 1;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+            font-size: 9px;
+        }
+
+        .result-table th, .result-table td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-table th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        .result-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .student-info {
+            background: var(--light);
+            padding: 6px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 9px;
+        }
+
+        .student-info h3 {
+            margin-bottom: 4px;
+            color: var(--primary);
+            font-size: 11px;
+        }
+
+        .reasoning-container {
+            margin-top: 10px;
+        }
+
+        .reasoning-item {
+            background: var(--light);
+            padding: 6px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 9px;
+        }
+
+        .reasoning-item h4 {
+            color: var(--primary);
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .reasoning-item p {
+            margin-bottom: 3px;
+            line-height: 1.4;
+        }
+
+        .icon {
+            margin-right: 3px;
+            font-size: 10px;
+        }
+
+        .whatsapp-fixed {
+            position: fixed;
+            bottom: 8px;
+            right: 8px;
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+            text-decoration: none;
+        }
+
+        .error {
+            color: #e63946;
+            font-size: 8px;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .reasoning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .social-buttons {
+                flex-direction: column;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            body {
+                font-size: 9px;
+                padding: 5px;
+            }
+
+            .content {
+                padding: 8px;
+            }
+
+            .question-nav {
+                gap: 3px;
+            }
+
+            .question-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pre-Medix 2025</h1>
+            <p>Test No: Pre-Medix-02</p>
+        </div>
+
+        <div class="content">
+            <div class="social-buttons">
+                <a href="https://pre-medix.blogspot.com/?m=1" class="social-btn blog" target="_blank">
+                    <i class="fas fa-blog icon"></i> Blogger Website
+                </a>
+                <a href="https://whatsapp.com/channel/0029VbBGhht7j6g3r478FG0i" class="social-btn whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp icon"></i> WhatsApp Channel
+                </a>
+                <a href="mailto:info.premedixis@gmail.com" class="social-btn contact">
+                    <i class="fas fa-envelope icon"></i> Contact Us
+                </a>
+            </div>
+
+            <div id="login-form" class="login-form active">
+                <div class="form-group">
+                    <label for="access-code">Access Code</label>
+                    <input type="password" id="access-code" class="form-control" placeholder="Enter your access code">
+                    <div id="login-error" class="error">Invalid access code. Please try again.</div>
+                </div>
+                <button id="login-btn" class="btn btn-block">Access Quiz</button>
+            </div>
+
+            <div id="student-form" class="student-form">
+                <h2 style="text-align: center; margin-bottom: 8px; font-size: 12px;">Student Information</h2>
+                <div class="form-group">
+                    <label for="student-name">Student Name</label>
+                    <input type="text" id="student-name" class="form-control" placeholder="Enter your full name">
+                    <div id="name-error" class="error">Please enter your name</div>
+                </div>
+                <div class="form-group">
+                    <label for="father-name">Father's Name</label>
+                    <input type="text" id="father-name" class="form-control" placeholder="Enter your father's name">
+                    <div id="father-error" class="error">Please enter your father's name</div>
+                </div>
+                <div class="form-group">
+                    <label for="mdcat-appearance">MDCAT Appearance</label>
+                    <select id="mdcat-appearance" class="form-control">
+                        <option value="">Select your status</option>
+                        <option value="fresh">Fresh</option>
+                        <option value="repeater">Repeater</option>
+                    </select>
+                    <div id="mdcat-error" class="error">Please select your MDCAT status</div>
+                </div>
+                <div class="form-group">
+                    <label for="fsc-marks">FSC Marks Obtained</label>
+                    <input type="number" id="fsc-marks" class="form-control" placeholder="Enter your FSC marks" min="0" max="1200">
+                    <div id="fsc-error" class="error">Please enter valid FSC marks</div>
+                </div>
+                <div class="form-group">
+                    <label for="fsc-total">FSC Total Marks</label>
+                    <select id="fsc-total" class="form-control">
+                        <option value="1100">1100</option>
+                        <option value="1200">1200</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="metric-marks">Metric Marks Obtained</label>
+                    <input type="number" id="metric-marks" class="form-control" placeholder="Enter your Metric marks" min="0" max="1200">
+                    <div id="metric-error" class="error">Please enter valid Metric marks</div>
+                </div>
+                <div class="form-group">
+                    <label for="metric-total">Metric Total Marks</label>
+                    <select id="metric-total" class="form-control">
+                        <option value="1100">1100</option>
+                        <option value="1200">1200</option>
+                    </select>
+                </div>
+                <button id="start-quiz-btn" class="btn btn-block">Start Quiz</button>
+            </div>
+
+            <div id="quiz-container" class="quiz-container">
+                <div class="timer-container">
+                    <div>Question Timer: <span id="question-timer">01:00</span></div>
+                    <div>Total Timer: <span id="total-timer">05:00</span></div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <div class="question-nav" id="question-nav">
+                </div>
+
+                <div class="question" id="question"></div>
+
+                <div class="options-container" id="options-container">
+                </div>
+
+                <div class="navigation-buttons">
+                    <button id="back-btn" class="btn"><i class="fas fa-arrow-left icon"></i> Back</button>
+                    <button id="reasoning-btn" class="btn btn-info"><i class="fas fa-lightbulb icon"></i> Show Reasoning</button>
+                    <button id="skip-btn" class="btn btn-warning"><i class="fas fa-forward icon"></i> Skip</button>
+                    <button id="next-btn" class="btn btn-success">Next <i class="fas fa-arrow-right icon"></i></button>
+                    <button id="submit-quiz-btn" class="btn btn-info"><i class="fas fa-paper-plane icon"></i> Submit</button>
+                </div>
+            </div>
+
+            <div id="result-container" class="result-container">
+                <div class="student-info" id="student-info">
+                </div>
+
+                <h2 style="font-size: 12px; margin-bottom: 6px;">Quiz Results</h2>
+                <table class="result-table">
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Total Correct</td>
+                        <td id="total-correct">0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Incorrect</td>
+                        <td id="total-incorrect">0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Skipped</td>
+                        <td id="total-skipped">0</td>
+                    </tr>
+                    <tr>
+                        <td>Marks Obtained</td>
+                        <td id="marks-obtained">0</td>
+                    </tr>
+                    <tr>
+                        <td>Percentage</td>
+                        <td id="percentage">0%</td>
+                    </tr>
+                </table>
+
+                <div class="navigation-buttons">
+                    <button id="retake-quiz-btn" class="btn btn-warning"><i class="fas fa-redo icon"></i> Retake Quiz</button>
+                    <button id="show-reasoning-btn" class="btn btn-info"><i class="fas fa-book-open icon"></i> Show All Reasoning</button>
+                    <a href="https://whatsapp.com/channel/0029VbBGhht7j6g3r478FG0i" class="btn btn-success" target="_blank">
+                        <i class="fab fa-whatsapp icon"></i> Follow WhatsApp Channel
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="reasoning-modal" id="reasoning-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Question Explanation</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div id="modal-body">
+            </div>
+        </div>
+    </div>
+
+    <a href="https://whatsapp.com/channel/0029VbBGhht7j6g3r478FG0i" class="whatsapp-fixed" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "Catalase can be activated at pH:",
+                options: ["a.1", "b.3", "c.5", "d.7"],
+                correct: 3,
+                reasoning: "Catalase, an enzyme found in peroxisomes, has an optimum pH close to 7 (neutral), which is the typical pH for most cellular enzymes."
+            },
+            {
+                question: "Enzymatic activity can be inhibited by?",
+                options: ["a.Heavy metal ions", "b.Methane", "c.Mutase", "d.Noble gases"],
+                correct: 0,
+                reasoning: "Heavy metal ions can denature enzymes or bind to their active sites, thereby inhibiting their catalytic activity."
+            },
+            {
+                question: "A competitive inhibitor:",
+                options: ["a.Accelerates the chemical reaction", "b.Competes with the enzyme", "c.Is irreversible", "d.Is reversible"],
+                correct: 3,
+                reasoning: "Competitive inhibitors bind reversibly to the active site of the enzyme, competing with the substrate; their effect can be overcome by increasing substrate concentration."
+            },
+            {
+                question: "Wings of birds and that of flying lizards provide evidence of:",
+                options: ["a.Convergent evolution", "b.Divergent evolution", "c.No evolution", "d.Same origin"],
+                correct: 0,
+                reasoning: "These are analogous structures (similar function, different evolutionary origin), which is evidence of convergent evolution where unrelated species evolve similar traits."
+            },
+            {
+                question: "The embryological stages of ______ show similarity in anatomical features.",
+                options: ["a.All living things", "b.All non-vertebrates", "c.All vertebrates", "d.Human, jelly fish and mouse"],
+                correct: 2,
+                reasoning: "Early embryos of all vertebrates share common features like gill slits and tails, providing evidence for a common ancestor."
+            },
+            {
+                question: "Which enzyme is secreted in the active form?",
+                options: ["a.Amylase", "b.Lipase", "c.Peptidase", "d.Protease"],
+                correct: 0,
+                reasoning: "Amylase, secreted by the salivary glands and pancreas, is active upon secretion and begins breaking down starch immediately."
+            },
+            {
+                question: "Which hormone stimulates the secretion of gastric juice?",
+                options: ["a.Cholecystokinin", "b.Gastrin", "c.Insulin", "d.Secretin"],
+                correct: 1,
+                reasoning: "Gastrin is produced by the stomach lining and stimulates the gastric glands to secrete gastric juice."
+            },
+            {
+                question: "In an inflammatory response, bradykinin causes?",
+                options: ["a.Activation of natural killer cells", "b.Blockage in blood vessels", "c.Constriction of blood vessels", "d.Leakage of fluid from blood vessels"],
+                correct: 3,
+                reasoning: "Bradykinin is a potent vasodilator that increases vascular permeability, causing leakage of fluid and leading to swelling (edema)."
+            },
+            {
+                question: "Which of the following is an example of passive immunity?",
+                options: ["a.Antibodies from mother’s milk", "b.Previous chickenpox infection", "c.Inactivated polio vaccine", "d.Live polio vaccine"],
+                correct: 0,
+                reasoning: "Passive immunity is the transfer of pre-formed antibodies (e.g., through breast milk) rather than the body producing its own."
+            },
+            {
+                question: "Bacteria that lack flagella are called?",
+                options: ["a.Amphitrichous", "b.Atrichious", "c.Lophotrichous", "d.Peritrichous"],
+                correct: 1,
+                reasoning: "The prefix \"a-\" means without, so atrichous bacteria lack flagella entirely."
+            },
+            {
+                question: "Antibiotics can be used against:",
+                options: ["a.Herpes simplex", "b.Influenza", "c.Polio", "d.Viruses (as a general category)"],
+                correct: 3,
+                reasoning: "Antibiotics target bacterial structures and processes; they are ineffective against viruses like herpes, influenza, and polio. The correct option from the given context would be 'none of the above' since all provided are viruses, so I've added a more general option to reflect the intent."
+            },
+            {
+                question: "The ______ in semen facilitate the transport of sperms.",
+                options: ["a.Androgen", "b.Prostaglandins", "c.Oxytocin", "d.None of the above"],
+                correct: 1,
+                reasoning: "Prostaglandins in semen stimulate muscle contractions in the female reproductive tract, aiding sperm transport."
+            },
+            {
+                question: "The acidity of urine is neutralized by?",
+                options: ["a.Cowpers gland", "b.Prostate gland", "c.Seminal vesicle", "d.Vas deferens"],
+                correct: 1,
+                reasoning: "The prostate gland secretes an alkaline fluid that helps neutralize the acidity of the vaginal tract and urine, protecting the sperm."
+            },
+            {
+                question: "The corpus luteum is essentially formed from a",
+                options: ["a.Graafian follicle", "b.Ovum", "c.Oogonium", "d.Oocyte"],
+                correct: 0,
+                reasoning: "After ovulation, the ruptured Graafian follicle transforms into the corpus luteum, which secretes progesterone."
+            },
+            {
+                question: "The outer layer of uterus is called as:",
+                options: ["a.Endometrium", "b.Myometrium", "c.Mesometrium", "d.Perimetrium"],
+                correct: 3,
+                reasoning: "The uterine wall has three layers: perimetrium (outer serous layer), myometrium (middle muscular layer), and endometrium (inner glandular layer)."
+            },
+            {
+                question: "______ is spread through sexual contact.",
+                options: ["a.Gonorrhoea", "b.Influenza", "c.Tuberculosis", "d.Typhoid"],
+                correct: 0,
+                reasoning: "Gonorrhoea is a sexually transmitted infection (STI) caused by the bacterium Neisseria gonorrhoeae."
+            },
+            {
+                question: "The cells contained in the lacunae of the bone are called",
+                options: ["a.Chondrocytes", "b.Osteoblast", "c.Osteocytes", "d.Osteoclast"],
+                correct: 2,
+                reasoning: "Osteocytes are mature bone cells that reside in small cavities called lacunae within the calcified bone matrix."
+            },
+            {
+                question: "The ______ surrounds the muscle fibre of the skeletal muscle.",
+                options: ["a.Cytoplasm", "b.Lacunae", "c.Mwofibrils", "d.Sarcoplasm"],
+                correct: 3,
+                reasoning: "The cytoplasm of a muscle cell is specifically called the sarcoplasm."
+            },
+            {
+                question: "What happens to calcium when skeletal muscles recover from contraction?",
+                options: ["a.Released from the sarcoplasmic reticulum", "b.Released from the myosin head", "c.Pumped into the sarcoplasmic reticulum", "d.Exchanged for sodium ions"],
+                correct: 2,
+                reasoning: "For relaxation to occur, calcium ions are actively pumped back into the sarcoplasmic reticulum, detaching them from troponin."
+            },
+            {
+                question: "Which of the following blood groups has anti-A and anti-B antibodies in the serum?",
+                options: ["a.A", "b.AB", "c.B", "d.O"],
+                correct: 3,
+                reasoning: "Blood group O individuals have neither A nor B antigens on their red blood cells, so their plasma contains both anti-A and anti-B antibodies."
+            },
+            {
+                question: "What is the primary outcome of crossing over during prophase of meiosis I?",
+                options: ["a.Chromosomes duplicate without any exchange of parts", "b.Homologous chromosomes exchange different pairs leading to recombinant chromatids and increased genetic variation", "c.Homologous chromosomes exchange identical parts, resulting in no genetic variation", "d.Non-homologous chromosomes exchange parts"],
+                correct: 1,
+                reasoning: "Crossing over is the exchange of genetic material between non-sister chromatids of homologous chromosomes, creating new combinations of alleles and increasing genetic diversity."
+            },
+            {
+                question: "The genetic makeup that your parents have transferred to you for your hair color, makes up your:",
+                options: ["a.Genotype", "b.Karyotype", "c.Phenotype", "d.None of the above"],
+                correct: 0,
+                reasoning: "The genotype is the specific genetic code (alleles) an organism inherits from its parents for a particular trait."
+            },
+            {
+                question: "Carnivorous plants have evolved mechanisms for trapping and digesting small animals. The product of this digestion is used to supplement the plant’s supply of:",
+                options: ["a.Carbohydrates", "b.Lipids", "c.Nitrites", "d.Water"],
+                correct: 2,
+                reasoning: "Carnivorous plants typically grow in nitrogen-poor soils; they digest prey primarily to obtain nitrogen and other minerals, often in the form of nitrates/nitrites."
+            },
+            {
+                question: "Which is true for an X linked dominant trait?",
+                options: ["a.All female offspring of the affected father will be affected", "b.Half of the female offsprings of the affected father will be affected", "c.No male offspring of an affected mother will be affected", "d.No female offspring of the affected father will be affected"],
+                correct: 0,
+                reasoning: "A father always passes his X chromosome to all his daughters. If he is affected by an X-linked dominant disorder, all his daughters will inherit the mutant allele and be affected."
+            },
+            {
+                question: "Malpighian tubules are found in:",
+                options: ["a.Earthworm", "b.Grasshopper", "c.Leech", "d.Slug"],
+                correct: 1,
+                reasoning: "Malpighian tubules are the excretory organs found in insects, such as grasshoppers."
+            },
+            {
+                question: "Shark belongs to class ______",
+                options: ["a.Chondrichthyes", "b.Echinodermata", "c.Osteichthyes", "d.Urochordata"],
+                correct: 0,
+                reasoning: "Sharks have a skeleton made of cartilage, not bone, placing them in the class Chondrichthyes."
+            },
+            {
+                question: "Canal system is a characteristic of?",
+                options: ["a.Cridarians", "b.Protozoans", "c.Porifera", "d.Segmented worms"],
+                correct: 2,
+                reasoning: "The canal system is a defining feature of phylum Porifera (sponges), used for filter feeding."
+            },
+            {
+                question: "Mantle is the feature of?",
+                options: ["a.Annelids", "b.Chordates", "c.Echinoderms", "d.Mussel"],
+                correct: 3,
+                reasoning: "The mantle is a significant feature of mollusks (e.g., mussels); it secretes the material that forms the shell."
+            },
+            {
+                question: "The production of energy is ______.",
+                options: ["a.Faster in anaerobic respiration", "b.Faster in aerobic respiration", "c.Same in both types of respiration", "d.Not associated with respiration"],
+                correct: 1,
+                reasoning: "Aerobic respiration (yielding ~36 ATP/glucose) is much more efficient and thus produces energy faster per glucose molecule than anaerobic respiration (yielding 2 ATP/glucose)."
+            },
+            {
+                question: "The pathway to the breakdown of glucose, carried out by micro-organisms, is called:",
+                options: ["a.Lactic acid fermentation", "b.Alcoholic fermentation", "c.Cellular respiration", "d.None of the above"],
+                correct: 3,
+                reasoning: "The question describes glycolysis, the initial pathway for glucose breakdown common to both fermentation and cellular respiration. The specific options a and b are types of fermentation, which is only part of the process."
+            },
+            {
+                question: "Chromosome is typically made up from a combination of?",
+                options: ["a.DNA and protein", "b.DNA and RNA", "c.RNA and lipids", "d.RNA and proteins"],
+                correct: 0,
+                reasoning: "Chromosomes are composed of chromatin, which is a complex of DNA and histone proteins."
+            },
+            {
+                question: "Which cytoplasmic organelle make their own proteins?",
+                options: ["a.Chromosomes", "b.Golgi apparatus", "c.Mitochondria", "d.Smooth endoplasmic reticulum"],
+                correct: 2,
+                reasoning: "Mitochondria (and chloroplasts) have their own DNA and ribosomes, allowing them to synthesize some of their own proteins."
+            },
+            {
+                question: "The active mass movement of mitochondria in the cytoplasm is due to a",
+                options: ["a.Cyclosis", "b.Endoplasmic streaming movements", "c.Golgi apparatus", "d.Transfer RNA"],
+                correct: 0,
+                reasoning: "Cyclosis, or cytoplasmic streaming, is the process that causes the movement of organelles like mitochondria within the cell."
+            },
+            {
+                question: "Which part of the brain is controlling your sense of balance?",
+                options: ["a.Amygdala", "b.Cerebellum", "c.Hippocampus", "d.Medulla Oblongata"],
+                correct: 1,
+                reasoning: "The cerebellum is primarily responsible for coordinating voluntary movements, maintaining posture, and equilibrium (balance)."
+            },
+            {
+                question: "The neurotransmitter ______ is hydrolysed by monoamine oxidase",
+                options: ["a.Acetylcholine", "b.Adrenaline", "c.Guamate", "d.Serotonin"],
+                correct: 1,
+                reasoning: "Monoamine oxidase (MAO) is an enzyme that breaks down monoamine neurotransmitters, such as adrenaline (epinephrine), noradrenaline, and serotonin."
+            },
+            {
+                question: "Most of the neurons in the CNS are?",
+                options: ["a.Bipolar", "b.Multipolar", "c.Pseudo unipolar", "d.Unipolar"],
+                correct: 1,
+                reasoning: "Multipolar neurons, with one axon and many dendrites, are the most common type of neuron in the central nervous system (e.g., in the brain and spinal cord)."
+            },
+            {
+                question: "The enzymes enable the conversion of substrates into products by",
+                options: ["a.Changing equilibrium in the direction of the substrate", "b.Increasing the activation energy", "c.Increasing the substrate concentration", "d.Lowering the activation energy"],
+                correct: 3,
+                reasoning: "Enzymes act as biological catalysts by lowering the activation energy required for a reaction to proceed, thereby speeding up the reaction rate."
+            },
+            {
+                question: "According to Lamarckism, the basis of evolution is:",
+                options: ["a.Inheritance of acquired characteristics", "b.Mutation", "c.Natural selection", "d.Survival of the fittest"],
+                correct: 0,
+                reasoning: "Lamarck's theory of evolution proposed that organisms could pass on characteristics acquired during their lifetime to their offspring."
+            },
+            {
+                question: "What best describes the hind leg bones seen in the whale?",
+                options: ["a.Analogous to the fin of living fish", "b.Fossil structure from an extinct ancestor", "c.Homologous structure of the wings of a bat", "d.Vestigial structures that had a function in an ancestor"],
+                correct: 3,
+                reasoning: "Vestigial structures are remnants of features that served a function in the organism's ancestors; whale pelvis and leg bones are a classic example."
+            },
+            {
+                question: "Which is true about the cells found in gastric glands lining the stomach wall?",
+                options: ["a.Chief cells secrete gastrin", "b.Hormone cells secrete intrinsic factor", "c.Mucus cells secrete mucin", "d.Parletal cells secrete pepsinogen"],
+                correct: 2,
+                reasoning: "Mucous neck cells in the gastric glands secrete mucus (mucin) to protect the stomach lining from acid and enzymes."
+            },
+            {
+                question: "What directly triggers the activation of natural killer cells?",
+                options: ["a.Free radicals", "b.Hydrogen peroxide", "c.Interferons", "d.Oxygen"],
+                correct: 2,
+                reasoning: "Interferons, released by virus-infected cells, are cytokines that play a key role in activating natural killer (NK) cells."
+            },
+            {
+                question: "Which of the following is NOT true about plasmids found in streptococci?",
+                options: ["a.Carry fewer genes than the chromosome", "b.Replicate autonomously from the chromosome", "c.They are considered as genetic element", "d.The bacterial chromosome depends on plasmids for replication"],
+                correct: 3,
+                reasoning: "Plasmids are extrachromosomal, circular DNA molecules that replicate independently; the main bacterial chromosome does not depend on them for its replication."
+            },
+            {
+                question: "Which of the following bacteria produces endospores?",
+                options: ["a.Both gram negative and positive bacteria", "b.Gram negative", "c.Gram positive", "d.Mycobacteria"],
+                correct: 2,
+                reasoning: "Endospore formation is a characteristic primarily of certain Gram-positive bacteria, such as Bacillus and Clostridium."
+            },
+            {
+                question: "______ is used in the production of Humulin?",
+                options: ["a.Bacteria", "b.Fungi", "c.Protozoa", "d.Virus"],
+                correct: 0,
+                reasoning: "Humulin is human insulin produced by genetically modified bacteria (e.g., E. coli) that contain the human insulin gene."
+            },
+            {
+                question: "Which of the following does NOT relate to smooth muscles?",
+                options: ["a.Controlled by the autonomic nervous system", "b.Have spindle shaped cells", "c.Line the wall of heart", "d.Lack striations"],
+                correct: 2,
+                reasoning: "The wall of the heart is composed of cardiac muscle, which is striated and involuntary, not smooth muscle."
+            },
+            {
+                question: "Which term best describes an organism’s physical characteristic.",
+                options: ["a.Allele", "b.Genetic code", "c.Genotype", "d.Trait"],
+                correct: 3,
+                reasoning: "A trait is the observable physical or biochemical characteristic of an organism, determined by its genotype."
+            },
+            {
+                question: "What will happen with the addition of salt to water?",
+                options: ["a.Water potential will increase", "b.Water potential will remain same", "c.Osmotic potential will increase", "d.Osmotic potential will remain same"],
+                correct: 2,
+                reasoning: "Adding solute (salt) to pure water makes its osmotic potential (solute potential) more negative, i.e., it increases (though the value becomes a larger negative number)."
+            },
+            {
+                question: "Which of the following is NOT true about viruses?",
+                options: ["a.Contain DNA", "b.Can replicate on their own", "c.Can infect bacteria", "d.They have a sub-cellular structure"],
+                correct: 1,
+                reasoning: "Viruses are obligate intracellular parasites; they lack the machinery for independent replication and must hijack a host cell's machinery."
+            },
+            {
+                question: "The genetic code of ______ is bound by a lipid membrane?",
+                options: ["a.Enterovirus", "b.Flu virus", "c.Hepatitis A virus", "d.Polio virus"],
+                correct: 1,
+                reasoning: "The influenza virus (flu virus) is an enveloped virus, meaning its capsid is surrounded by a lipid bilayer derived from the host cell membrane."
+            },
+            {
+                question: "Viruses can NOT ______.",
+                options: ["a.Crystalise", "b.Excrete", "c.Infect bacteria", "d.Mutate"],
+                correct: 1,
+                reasoning: "Excretion is a process of metabolism; viruses are not considered living and do not perform metabolic activities like excretion."
+            },
+            {
+                question: "Where are the enzymes required for the replication of HIV virus located?",
+                options: ["a.In the protein spikes", "b.Surrounding the viral core", "c.Inside the capsid", "d.Outside the capsid"],
+                correct: 2,
+                reasoning: "HIV, a retrovirus, carries essential enzymes like reverse transcriptase and integrase packaged inside its protein capsid/core."
+            },
+            {
+                question: "The process of ATP synthesis through a combination of electrochemical and osmotic events is known as:",
+                options: ["a.Fermentation", "b.Glycolysis", "c.Oxidative phosphorylation", "d.Oxidation of pyruvate to acetyl CoA"],
+                correct: 2,
+                reasoning: "Oxidative phosphorylation uses the energy from the electron transport chain to create a proton gradient, and the flow of protons back through ATP synthase drives ATP synthesis."
+            },
+            {
+                question: "Optimum pH for pancreatic lipase is:",
+                options: ["a.2", "b.4", "c.6", "d.8"],
+                correct: 3,
+                reasoning: "Pancreatic lipase acts in the small intestine, where the pH is slightly basic (around 8) due to bicarbonate secretions from the pancreas."
+            },
+            {
+                question: "Sugarcane contains ______.",
+                options: ["a.Fructose", "b.Glucose", "c.Ribose", "d.Sucrose"],
+                correct: 3,
+                reasoning: "Sugarcane is a primary commercial source of sucrose (table sugar), a disaccharide of glucose and fructose."
+            },
+            {
+                question: "Sickle cell anaemia results from?",
+                options: ["a.Reduction in oxygen carrying capacity of haemoglobin", "b.Linkage between the polypeptide chains", "c.Single amino acid substitution in the haemoglobin molecule", "d.Viral infections of RNA viruses"],
+                correct: 2,
+                reasoning: "Sickle cell anemia is caused by a point mutation leading to a single amino acid substitution (valine for glutamic acid) in the beta-globin chain of hemoglobin."
+            },
+            {
+                question: "Which is INCORRECT about the globular proteins?",
+                options: ["a.Abundantly found in hair", "b.Are spherical in shape", "c.Have polypeptide chains", "d.Soluble in water"],
+                correct: 0,
+                reasoning: "Hair is made of keratin, which is a fibrous (not globular) protein; globular proteins are typically spherical and soluble."
+            },
+            {
+                question: "What is the ester of fatty acids and long chain alcohol called?",
+                options: ["a.Acylglycerol", "b.Glycerol", "c.Phospholipid", "d.Wax"],
+                correct: 3,
+                reasoning: "Waxes are esters formed from a long-chain alcohol and a long-chain fatty acid."
+            },
+            {
+                question: "Lipids, which do not contain fatty acid are:",
+                options: ["a.Neutral lipids", "b.Phosphatidic acids", "c.Steroids", "d.Waxes"],
+                correct: 2,
+                reasoning: "Steroids, like cholesterol, have a structure based on four fused carbon rings and do not contain fatty acids."
+            },
+            {
+                question: "The peptidoglycan cell wall is specific to.",
+                options: ["a.Amoeba", "b.Bacteria", "c.Protozoa", "d.Virus"],
+                correct: 1,
+                reasoning: "Peptidoglycan is a unique and defining structural component of the cell wall in most bacteria."
+            },
+            {
+                question: "Where are spindle fibres attached on a chromosome during cell division",
+                options: ["a.Centromere", "b.Histone proteins", "c.Nucleolus", "d.Telomere"],
+                correct: 0,
+                reasoning: "The kinetochore, located at the centromere, is the site where spindle microtubules attach to the chromosome."
+            },
+            {
+                question: "Which organelle contribute towards steroid production?",
+                options: ["a.Endoplasmic Reticulum", "b.Golgi apparatus", "c.Lysosome", "d.Ribosomes"],
+                correct: 0,
+                reasoning: "The smooth endoplasmic reticulum (SER) is involved in the synthesis of lipids, including steroids."
+            },
+            {
+                question: "The lysosomes found in eukaryotes contain:",
+                options: ["a.Hydrolytic enzymes", "b.Meiotic enzymes", "c.Oxidative enzymes", "d.Mitotic enzymes"],
+                correct: 0,
+                reasoning: "Lysosomes are membrane-bound organelles containing a variety of hydrolytic enzymes (acid hydrolases) for intracellular digestion."
+            },
+            {
+                question: "Plasma membrane is differentially permeable membrane due to the presence of?",
+                options: ["a.Carbohydrates", "b.Lipids", "c.Proteins", "d.Vitamins"],
+                correct: 2,
+                reasoning: "While the lipid bilayer provides the basic barrier, the selective permeability is largely due to specific transport proteins (channels and carriers) embedded within it."
+            },
+            {
+                question: "The following function/activity is NOT controlled by the autonomic nervous system.",
+                options: ["a.Cardiac muscles contraction", "b.Salivation", "c.Smooth muscles contraction", "d.Thoughts and emotions"],
+                correct: 3,
+                reasoning: "The autonomic nervous system controls involuntary functions; thoughts and emotions are higher-order processes controlled by the central nervous system, particularly the brain."
+            },
+            {
+                question: "A motor neuron:",
+                options: ["a.Carries impulse from effectors to CNS", "b.Carries impulse from receptors to CNS", "c.Carries impulse from CNS to muscles", "d.Connects sensory nerves to ganglions"],
+                correct: 2,
+                reasoning: "Motor (efferent) neurons transmit signals from the central nervous system (CNS) to effector organs like muscles and glands."
+            },
+            {
+                question: "Diffusion of ______ across the post synaptic membrane causes it to depolarise:",
+                options: ["a.Calcium ions", "b.Chloride ions", "c.Potassium ions", "d.Sodium ions"],
+                correct: 3,
+                reasoning: "The influx of positively charged sodium ions into the postsynaptic cell causes depolarization."
+            },
+            {
+                question: "A reflex action, does not involve the a",
+                options: ["a.Brain", "b.Motor neuron", "c.Sensory neuron", "d.Spinal cord"],
+                correct: 0,
+                reasoning: "A reflex arc is a rapid, involuntary response that involves a sensory neuron, an interneuron (often in the spinal cord), and a motor neuron, bypassing the brain for speed."
+            },
+            {
+                question: "What happens to the enzyme after an enzyme-catalysed reaction?",
+                options: ["a.Reduced to inactive form", "b.Becomes inert", "c.Changes into substrate", "d.Used for another reaction"],
+                correct: 3,
+                reasoning: "Enzymes are biological catalysts; they are not consumed or permanently altered in the reaction and can be used repeatedly."
+            },
+            {
+                question: "In the production of SO₃ from SO₂ and Oxygen, the yield of SO₃ is increased by",
+                options: ["a.Adding a catalyst", "b.Adding more SO₂", "c.Increasing temperature", "d.Removing oxygen"],
+                correct: 1,
+                reasoning: "According to Le Chatelier's principle, increasing the concentration of a reactant (SO₂) shifts the equilibrium position to the right, favoring the formation of more product (SO₃)."
+            },
+            {
+                question: "Consider N₂ + 3H₂₍g₎ ⇌ 2NH₃₍g₎ ΔH = -92.46kJ/mol The optimum temperature(°C) to produce ammonia is",
+                options: ["a.0", "b.450", "c.5000", "d.Constant temperature"],
+                correct: 1,
+                reasoning: "The Haber process is exothermic, so lower temperatures favor product formation. However, a moderately high temperature (~450°C) is used as a compromise to achieve a reasonable reaction rate."
+            },
+            {
+                question: "The unit of Kc for the system PCIs ⇌ PCI₃ + Cl₂ is",
+                options: ["a.dm³/mol", "b.mol/ dm³", "c.mol/ dm⁶", "d.mol²/dm⁶"],
+                correct: 1,
+                reasoning: "Kc = [PCl₃][Cl₂] / [PCl₅]. The units are (mol/dm³ * mol/dm³) / (mol/dm³) = mol/dm³."
+            },
+            {
+                question: "For a first order reaction A → B, the rate constant is 0.0458 s⁻¹. Calculate rate of the reaction if the concentration of reactant is 0.35mol dm⁻³.",
+                options: ["a.0.012 mol dm⁻³ s⁻¹", "b.0.014 mol dm⁻³ s⁻¹", "c.0.016 mol dm⁻³ s⁻¹", "d.0.018 mol dm⁻³ s⁻¹"],
+                correct: 2,
+                reasoning: "For a first-order reaction, Rate = k[A]. Rate = (0.0458 s⁻¹) * (0.35 mol dm⁻³) = 0.01603 mol dm⁻³ s⁻¹."
+            },
+            {
+                question: "A reaction is first order with respect to A and second order with respect to B, the rate equation is",
+                options: ["a.Rate = k [A]", "b.Rate = k [A][B]", "c.Rate = k [A][B]", "d.Rate = k [A][B]²"],
+                correct: 3,
+                reasoning: "The order with respect to a reactant is the exponent of its concentration in the rate law. Therefore, Rate = k [A]¹[B]²."
+            },
+            {
+                question: "What mass of aluminium oxide (Al₂O₃) is produced from 18.5g of Al metal, when it reacts completely with oxygen gas according to the following equation? 4Al₍₅₎ + 3O₂₍g₎ → 2Al₂O₃₍₅₎",
+                options: ["a.30.8g", "b.32.6g", "c.34.9g", "d.36.5g"],
+                correct: 2,
+                reasoning: "Moles of Al = 18.5g / 27g/mol = 0.685 mol. From the stoichiometry, 4 mol Al produce 2 mol Al₂O₃, so moles of Al₂O₃ = (2/4)*0.685 = 0.3425 mol. Mass = 0.3425 mol * 102 g/mol = 34.935 g."
+            },
+            {
+                question: "Calculate the work done when 1 mole of an ideal gas expands from 15 dm³ to 20 dm³ against a constant external pressure of 2 atmospheres.",
+                options: ["a.-10 atm.dm³", "b.-5 atm.dm³", "c.5 atm.dm³", "d.10 atm.dm³"],
+                correct: 0,
+                reasoning: "Work done against constant pressure: w = -PΔV = -2 atm * (20 - 15) dm³ = -10 atm.dm³."
+            },
+            {
+                question: "When 1 mole of ice melts at 0°C and constant pressure of 1 atmosphere, 6025 J of heat is absorbed by the system. The molar volume of ice and water are 0.020 and 0.018 dm³, respectively. Calculate ΔE.",
+                options: ["a.6010.20J", "b.6015.20J", "c.6020.20J", "d.6025.20J"],
+                correct: 2,
+                reasoning: "ΔE = q + w. q = 6025 J. w = -PΔV = -1 atm * (0.018 - 0.020) dm³ = +0.002 atm.dm³ = +0.002 * 101.33 J = +0.20266 J. ΔE = 6025 + 0.20266 ≈ 6025.20 J."
+            },
+            {
+                question: "One slice of bread with a tablespoon of peanut butter on it contains 20g carbohydrate, 10g protein, and 9g fat. Calculate total energy consumed in this intake.",
+                options: ["a.158kcal", "b.173kcal", "c.201kcal", "d.218kcal"],
+                correct: 2,
+                reasoning: "Energy = (20g carb * 4 kcal/g) + (10g protein * 4 kcal/g) + (9g fat * 9 kcal/g) = 80 + 40 + 81 = 201 kcal."
+            },
+            {
+                question: "ΔH can be measured indirectly by applying a",
+                options: ["a.Avogadro’s law", "b.Faraday’s law", "c.Gas’s law", "d.Hess’s law"],
+                correct: 3,
+                reasoning: "Hess's law states that the total enthalpy change for a reaction is the sum of the enthalpy changes for the individual steps into which the reaction can be divided, allowing for indirect calculation."
+            },
+            {
+                question: "The heat of sublimation of potassium is 98kJ/mol, the heat of dissociation of bromine gas is 192.5 kJ/mol. The ionization energy of K is 414 kJ/mol. The electron affinity of Br is -334.7 kJ/mol and the heat of formation of KBr is -405.8 kJ/mol. Calculate the lattice energy of KBr.",
+                options: ["a.-679.3", "b.-669.5", "c.669.5", "d.679.3"],
+                correct: 0,
+                reasoning: "Using Born-Haber cycle: ΔH_f = ΔH_sub + IE + 1/2ΔH_diss + EA + U. -405.8 = 98 + 414 + (0.5*192.5) + (-334.7) + U. Solving for U gives U ≈ -679.3 kJ/mol."
+            },
+            {
+                question: "Which one of the following is a strong electrolyte in solution?",
+                options: ["a.Acetic acid", "b.Ammonium hydroxide", "c.Carbonic acid", "d.Potassium iodide"],
+                correct: 3,
+                reasoning: "Potassium iodide (KI) is a salt that dissociates completely in water into K⁺ and I⁻ ions, making it a strong electrolyte."
+            },
+            {
+                question: "When 4 g of magnesium was heated in excess of oxygen. Calculate the theoretical yield of magnesium oxide (MgO).",
+                options: ["a.3.7g", "b.4.2g", "c.5.4g", "d.6.6g"],
+                correct: 3,
+                reasoning: "2Mg + O₂ → 2MgO. Moles of Mg = 4g / 24g/mol = 0.1667 mol. Moles of MgO produced = 0.1667 mol. Mass of MgO = 0.1667 mol * 40g/mol = 6.667 g."
+            },
+            {
+                question: "The electrode potential of the standard hydrogen electrode is chosen as a",
+                options: ["a.-1 V", "b.0 V", "c.1 V", "d.2 V"],
+                correct: 1,
+                reasoning: "The Standard Hydrogen Electrode (SHE) is arbitrarily assigned a potential of 0.00 V, against which all other standard electrode potentials are measured."
+            },
+            {
+                question: "Electronegativity of Al is approximately equal to that of a",
+                options: ["a.B", "b.Be", "c.Mg", "d.Na"],
+                correct: 1,
+                reasoning: "Aluminum (Al) and Beryllium (Be) have similar electronegativity values (Al: 1.61, Be: 1.57 on the Pauling scale)."
+            },
+            {
+                question: "Which of the following alkali metal forms only normal oxide with O₂?",
+                options: ["a.K", "b.Li", "c.Na", "d.Rb"],
+                correct: 1,
+                reasoning: "Lithium forms the normal oxide (Li₂O) upon reaction with oxygen, while other alkali metals form peroxides or superoxides."
+            },
+            {
+                question: "Third period element that initially reacts rapidly with oxygen to form a protective oxide coating that prevents further reactions is a",
+                options: ["a.Al", "b.Mg", "c.Na", "d.Si"],
+                correct: 0,
+                reasoning: "Aluminum (Al) quickly forms a thin, protective layer of aluminum oxide (Al₂O₃) on its surface, which prevents further corrosion."
+            },
+            {
+                question: "Cu²⁺ salt solution is blue in colour due to transition of electrons from a",
+                options: ["a.d to d orbital", "b.p to d orbital", "c.p to p orbital", "d.s to p orbital"],
+                correct: 0,
+                reasoning: "The blue color in Cu²⁺ solutions is due to d-d transitions, where electrons absorb visible light energy to jump between split d-orbitals."
+            },
+            {
+                question: "Potassium ferrocyanide is which type of salt?",
+                options: ["a.Complex", "b.Double", "c.Mixed", "d.Normal"],
+                correct: 0,
+                reasoning: "K₄[Fe(CN)₆] is a complex salt as it contains a complex ion, [Fe(CN)₆]⁴⁻."
+            },
+            {
+                question: "Name of ketone functional group is a",
+                options: ["a.Amino", "b.Carbonyl", "c.Carboxyl", "d.Formyl"],
+                correct: 1,
+                reasoning: "The carbonyl group (C=O) is the functional group present in both aldehydes and ketones."
+            },
+            {
+                question: "Pyridine belongs to which class of organic compounds?",
+                options: ["a.Alicyclic", "b.Heterocyclic", "c.Homocyclic", "d.Hydrocarbon"],
+                correct: 1,
+                reasoning: "Pyridine (C₅H₅N) is a heterocyclic compound because its ring contains carbon atoms and a nitrogen atom (a heteroatom)."
+            },
+            {
+                question: "Which of the following elements cannot be detected directly in a given organic compound?",
+                options: ["a.Chlorine", "b.Nitrogen", "c.Oxygen", "d.Phosphorous"],
+                correct: 2,
+                reasoning: "Oxygen is usually detected indirectly by testing for its presence in functional groups, as there is no simple direct test like Lassaigne's test for N, S, halogens."
+            },
+            {
+                question: "The homolytic fission of C-H bond in an alkane result in a",
+                options: ["a.Alkyl free radical", "b.Carbonion", "c.Carbocation", "d.Methylpropane"],
+                correct: 0,
+                reasoning: "Homolytic fission involves the symmetrical breaking of a bond, where each atom gets one electron, forming two free radicals (e.g., R• and H•)."
+            },
+            {
+                question: "Addition of HBr to isobutylene mainly gives a",
+                options: ["a.isobutyl bromide", "b.n-butyl bromide", "c.sec-butyl bromide", "d.tert-butyl bromide"],
+                correct: 3,
+                reasoning: "The addition follows Markovnikov's rule. The electrophile (H⁺) adds to the less substituted carbon, forming the most stable carbocation (tertiary), which then reacts with Br⁻ to form tert-butyl bromide."
+            },
+            {
+                question: "Dehydrohalogenation of alkylhalide is carried out in presence of a",
+                options: ["a.Alcoholic KOH", "b.Aqueous KOH", "c.Conc. H₂SO₄", "d.Zn dust"],
+                correct: 0,
+                reasoning: "Alcoholic KOH promotes elimination (dehydrohalogenation) to form alkenes, while aqueous KOH favors substitution to form alcohols."
+            },
+            {
+                question: "The pK₆ of n-propyl amine is",
+                options: ["a.3.24", "b.3.28", "c.3.32", "d.3.35"],
+                correct: 3,
+                reasoning: "This is a factual recall. The pKb for n-propylamine is approximately 3.29-3.4, making 3.35 the closest listed option."
+            },
+            {
+                question: "The carbon atom carrying positive charge and attached to three other atoms or groups is called a",
+                options: ["a.Carbonion", "b.Carbone", "c.Carbocation", "d.Oxonium"],
+                correct: 2,
+                reasoning: "A carbocation is a species with a positively charged carbon atom that has three bonds."
+            },
+            {
+                question: "Which of the following has the highest boiling point?",
+                options: ["a.ethyl alcohol", "b.isopropyl alcohol", "c.n-propyl alcohol", "d.tert-butyl alcohol"],
+                correct: 2,
+                reasoning: "n-propyl alcohol has a higher boiling point than its isomers due to a larger surface area for stronger London dispersion forces, and all alcohols have higher b.p. than comparable alkanes due to H-bonding."
+            },
+            {
+                question: "The reaction of an alcohol with sodium produces a",
+                options: ["a.Aldehyde", "b.Alkoxide", "c.Ethane", "d.Ethene"],
+                correct: 1,
+                reasoning: "Alcohols react with active metals like sodium to form alkoxide ions and hydrogen gas (2R-OH + 2Na → 2R-O⁻Na⁺ + H₂)."
+            },
+            {
+                question: "Oxidation of secondary alcohol gives a",
+                options: ["a.Carboxylic acid", "b.Ether", "c.Ketone", "d.Phenol"],
+                correct: 2,
+                reasoning: "Secondary alcohols are oxidized to ketones."
+            },
+            {
+                question: "Which aldehyde is more reactive towards nucleophilic addition?",
+                options: ["a.Acetaldehyde", "b.Butyraldehyde", "c.Formaldehyde", "d.Propionaldehyde"],
+                correct: 2,
+                reasoning: "Formaldehyde (HCHO) is the most reactive aldehyde due to less steric hindrance and greater positive polarity on the carbonyl carbon."
+            },
+            {
+                question: "Acetic acid can be prepared by the hydrolysis of a",
+                options: ["a.Ethanal", "b.Ethanol", "c.Methanoic acid", "d.Methyl cyanide"],
+                correct: 3,
+                reasoning: "Hydrolysis of methyl cyanide (acetonitrile, CH₃CN) produces acetic acid (CH₃COOH)."
+            },
+            {
+                question: "Protein present in haemoglobin has ______ structure.",
+                options: ["a.Primary", "b.Secondary", "c.Tertiary", "d.Quaternary"],
+                correct: 3,
+                reasoning: "Hemoglobin is composed of four polypeptide chains (two alpha and two beta) assembled together, which is a quaternary structure."
+            },
+            {
+                question: "In competitive inhibition, the inhibitor",
+                options: ["a.Binds with substrate", "b.Competes with enzyme", "c.Competes with substrate", "d.Irreversibly binds with enzyme"],
+                correct: 2,
+                reasoning: "A competitive inhibitor competes with the substrate for binding to the active site of the enzyme."
+            }
+        ];
+
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const studentForm = document.getElementById('student-form');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const questionNav = document.getElementById('question-nav');
+        const reasoningModal = document.getElementById('reasoning-modal');
+        const modalBody = document.getElementById('modal-body');
+        const closeModal = document.getElementById('close-modal');
+
+        const accessCodeInput = document.getElementById('access-code');
+        const loginBtn = document.getElementById('login-btn');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+
+        const questionElement = document.getElementById('question');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const questionTimerElement = document.getElementById('question-timer');
+        const totalTimerElement = document.getElementById('total-timer');
+
+        const backBtn = document.getElementById('back-btn');
+        const reasoningBtn = document.getElementById('reasoning-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitQuizBtn = document.getElementById('submit-quiz-btn');
+
+        const retakeQuizBtn = document.getElementById('retake-quiz-btn');
+        const showReasoningBtn = document.getElementById('show-reasoning-btn');
+        const studentInfoElement = document.getElementById('student-info');
+
+        // Error elements
+        const loginError = document.getElementById('login-error');
+        const nameError = document.getElementById('name-error');
+        const fatherError = document.getElementById('father-error');
+        const mdcatError = document.getElementById('mdcat-error');
+        const fscError = document.getElementById('fsc-error');
+        const metricError = document.getElementById('metric-error');
+
+        // Quiz state variables
+        let currentQuestion = 0;
+        let answers = [];
+        let questionTimeLeft = 60;
+        let totalTimeLeft = quizData.length * 60;
+        let questionTimerInterval;
+        let totalTimerInterval;
+        let studentData = {};
+
+        // Event Listeners
+        loginBtn.addEventListener('click', handleLogin);
+        startQuizBtn.addEventListener('click', startQuiz);
+        backBtn.addEventListener('click', goToPreviousQuestion);
+        reasoningBtn.addEventListener('click', showReasoning);
+        skipBtn.addEventListener('click', skipQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        submitQuizBtn.addEventListener('click', submitQuiz);
+        retakeQuizBtn.addEventListener('click', retakeQuiz);
+        showReasoningBtn.addEventListener('click', showAllReasoning);
+        closeModal.addEventListener('click', () => {
+            reasoningModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === reasoningModal) {
+                reasoningModal.style.display = 'none';
+            }
+        });
+
+        // Allow Enter key to submit forms
+        accessCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        // Functions
+        function handleLogin() {
+            const accessCode = accessCodeInput.value.trim();
+
+            if (accessCode === 'Pre-Medix-02') {
+                loginError.style.display = 'none';
+                loginForm.classList.remove('active');
+                studentForm.classList.add('active');
+            } else if (accessCode === 'Dev-PreMedix-2025') {
+                loginError.style.display = 'none';
+                alert('Developer access granted!');
+                // Directly show quiz for developer
+                loginForm.classList.remove('active');
+                quizContainer.classList.add('active');
+                initializeQuiz();
+            } else {
+                loginError.style.display = 'block';
+            }
+        }
+
+        function validateStudentForm() {
+            let isValid = true;
+
+            // Reset errors
+            nameError.style.display = 'none';
+            fatherError.style.display = 'none';
+            mdcatError.style.display = 'none';
+            fscError.style.display = 'none';
+            metricError.style.display = 'none';
+
+            // Collect student data
+            const name = document.getElementById('student-name').value;
+            const fatherName = document.getElementById('father-name').value;
+            const mdcatAppearance = document.getElementById('mdcat-appearance').value;
+            const fscMarks = parseInt(document.getElementById('fsc-marks').value);
+            const fscTotal = parseInt(document.getElementById('fsc-total').value);
+            const metricMarks = parseInt(document.getElementById('metric-marks').value);
+            const metricTotal = parseInt(document.getElementById('metric-total').value);
+            
+            // Validate name
+            if (!name || name.trim() === '') {
+                nameError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate father's name
+            if (!fatherName || fatherName.trim() === '') {
+                fatherError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate MDCAT appearance
+            if (!mdcatAppearance) {
+                mdcatError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate FSC marks
+            if (isNaN(fscMarks) || fscMarks < 0 || fscMarks > fscTotal) {
+                fscError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Metric marks
+            if (isNaN(metricMarks) || metricMarks < 0 || metricMarks > metricTotal) {
+                metricError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                studentData = {
+                    name,
+                    fatherName,
+                    mdcatAppearance,
+                    fscMarks,
+                    fscTotal,
+                    metricMarks,
+                    metricTotal
+                };
+            }
+
+            return isValid;
+        }
+
+        function startQuiz() {
+            // Validate form
+            if (!validateStudentForm()) {
+                return;
+            }
+
+            studentForm.classList.remove('active');
+            quizContainer.classList.add('active');
+
+            // Initialize quiz
+            initializeQuiz();
+        }
+
+        function initializeQuiz() {
+            // Create question navigation buttons
+            questionNav.innerHTML = '';
+            quizData.forEach((_, index) => {
+                const button = document.createElement('button');
+                button.className = 'question-btn';
+                button.textContent = index + 1;
+                button.addEventListener('click', () => {
+                    currentQuestion = index;
+                    loadQuestion();
+                });
+                questionNav.appendChild(button);
+            });
+
+            // Initialize answers array
+            answers = new Array(quizData.length).fill(undefined);
+
+            // Load first question
+            loadQuestion();
+            startTimers();
+        }
+
+        function loadQuestion() {
+            const question = quizData[currentQuestion];
+            questionElement.innerHTML = `<b>${currentQuestion + 1}. ${question.question}</b>`;
+
+            // Update progress bar
+            progressBar.style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+
+            // Add new options
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (answers[currentQuestion] !== undefined && answers[currentQuestion] === index) {
+                    optionElement.classList.add('selected');
+                }
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update navigation buttons
+            backBtn.disabled = currentQuestion === 0;
+            nextBtn.disabled = false;
+            submitQuizBtn.style.display = currentQuestion === quizData.length - 1 ? 'block' : 'none';
+            nextBtn.style.display = currentQuestion === quizData.length - 1 ? 'none' : 'block';
+
+            // Update question navigation
+            updateQuestionNavigation();
+
+            // Reset question timer
+            questionTimeLeft = 60;
+            updateQuestionTimer();
+        }
+
+        function updateQuestionNavigation() {
+            const navButtons = questionNav.querySelectorAll('.question-btn');
+            navButtons.forEach((button, index) => {
+                button.classList.remove('current', 'answered');
+
+                if (index === currentQuestion) {
+                    button.classList.add('current');
+                }
+
+                if (answers[index] !== undefined) {
+                    button.classList.add('answered');
+                }
+            });
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            updateQuestionNavigation();
+            loadQuestion();
+        }
+
+        function showReasoning() {
+            const question = quizData[currentQuestion];
+            modalBody.innerHTML = `
+                <h4>${currentQuestion + 1}. ${question.question}</h4>
+                <p><strong>Correct Answer:</strong> ${question.options[question.correct]}</p>
+                <p><strong>Explanation:</strong> ${question.reasoning}</p>
+            `;
+            reasoningModal.style.display = 'flex';
+        }
+
+        function goToPreviousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function skipQuestion() {
+            answers[currentQuestion] = undefined;
+            updateQuestionNavigation();
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        function startTimers() {
+            // Clear any existing timers
+            clearInterval(questionTimerInterval);
+            clearInterval(totalTimerInterval);
+
+            // Question timer
+            questionTimeLeft = 60;
+            updateQuestionTimer();
+            questionTimerInterval = setInterval(() => {
+                questionTimeLeft--;
+                updateQuestionTimer();
+
+                if (questionTimeLeft <= 0) {
+                    clearInterval(questionTimerInterval);
+                    goToNextQuestion();
+                }
+            }, 1000);
+
+            // Total timer
+            totalTimeLeft = quizData.length * 60;
+            updateTotalTimer();
+            totalTimerInterval = setInterval(() => {
+                totalTimeLeft--;
+                updateTotalTimer();
+
+                if (totalTimeLeft <= 0) {
+                    clearInterval(totalTimerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateQuestionTimer() {
+            const minutes = Math.floor(questionTimeLeft / 60);
+            const seconds = questionTimeLeft % 60;
+            questionTimerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color when time is running out
+            if (questionTimeLeft <= 10) {
+                questionTimerElement.style.color = '#e63946';
+            } else {
+                questionTimerElement.style.color = 'inherit';
+            }
+        }
+
+        function updateTotalTimer() {
+            const minutes = Math.floor(totalTimeLeft / 60);
+            const seconds = totalTimeLeft % 60;
+            totalTimerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color when time is running out
+            if (totalTimeLeft <= 60) {
+                totalTimerElement.style.color = '#e63946';
+            } else {
+                totalTimerElement.style.color = 'inherit';
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(questionTimerInterval);
+            clearInterval(totalTimerInterval);
+
+            quizContainer.classList.remove('active');
+            resultContainer.classList.add('active');
+
+            // Calculate results
+            let correct = 0;
+            let incorrect = 0;
+            let skipped = 0;
+
+            answers.forEach((answer, index) => {
+                if (answer === undefined) {
+                    skipped++;
+                } else if (answer === quizData[index].correct) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            });
+
+            const totalMarks = quizData.length;
+            const marksObtained = correct;
+            const percentage = ((correct / totalMarks) * 100).toFixed(2);
+
+            // Update result table
+            document.getElementById('total-correct').textContent = correct;
+            document.getElementById('total-incorrect').textContent = incorrect;
+            document.getElementById('total-skipped').textContent = skipped;
+            document.getElementById('marks-obtained').textContent = `${marksObtained}/${totalMarks}`;
+            document.getElementById('percentage').textContent = `${percentage}%`;
+
+            // Display student info
+            studentInfoElement.innerHTML = `
+                <h3>Student Information</h3>
+                <p><strong>Name:</strong> ${studentData.name}</p>
+                <p><strong>Father's Name:</strong> ${studentData.fatherName}</p>
+                <p><strong>MDCAT Appearance:</strong> ${studentData.mdcatAppearance.charAt(0).toUpperCase() + studentData.mdcatAppearance.slice(1)}</p>
+                <p><strong>FSC Marks:</strong> ${studentData.fscMarks}/${studentData.fscTotal}</p>
+                <p><strong>Metric Marks:</strong> ${studentData.metricMarks}/${studentData.metricTotal}</p>
+            `;
+        }
+
+        function showAllReasoning() {
+            const reasoningContainer = document.createElement('div');
+            reasoningContainer.className = 'reasoning-container';
+            reasoningContainer.style.marginTop = '0';
+
+            quizData.forEach((question, index) => {
+                const reasoningItem = document.createElement('div');
+                reasoningItem.className = 'reasoning-item';
+
+                // Determine if the answer was correct, incorrect, or skipped
+                let answerStatus = '';
+                if (answers[index] === undefined) {
+                    answerStatus = '<span style="color: #6c757d;">(Skipped)</span>';
+                } else if (answers[index] === question.correct) {
+                    answerStatus = '<span style="color: #4ade80;">(Correct)</span>';
+                } else {
+                    answerStatus = '<span style="color: #f87171;">(Incorrect)</span>';
+                }
+
+                reasoningItem.innerHTML = `
+                    <h4>Question ${index + 1}: ${question.question} ${answerStatus}</h4>
+                    <p><strong>Your Answer:</strong> ${answers[index] !== undefined ? question.options[answers[index]] : 'Skipped'}</p>
+                    <p><strong>Correct Answer:</strong> ${question.options[question.correct]}</p>
+                    <p><strong>Reasoning:</strong> ${question.reasoning}</p>
+                `;
+
+                reasoningContainer.appendChild(reasoningItem);
+            });
+
+            modalBody.innerHTML = '';
+            modalBody.appendChild(reasoningContainer);
+            reasoningModal.style.display = 'flex';
+        }
+
+        function retakeQuiz() {
+            if (confirm('Are you sure you want to retake the quiz? Your current progress will be lost.')) {
+                // Reset quiz state
+                currentQuestion = 0;
+                answers = [];
+                questionTimeLeft = 60;
+                totalTimeLeft = quizData.length * 60;
+
+                // Show quiz container
+                resultContainer.classList.remove('active');
+                quizContainer.classList.add('active');
+
+                // Re-initialize quiz
+                initializeQuiz();
+            }
+        }
+    </script>
+</body>
+</html>
